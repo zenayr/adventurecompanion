@@ -24,3 +24,18 @@ func Parse() dnd.Races {
 
 	return races
 }
+
+func MakeXml(r dnd.Race) {
+	//r := &dnd.Race{Name: "test", Size: "10", Speed: "10", Ability: " ", Proficiency: " ", SpellAbility: " "}
+	var races [1]dnd.Race
+	races[0] = r
+
+	v := &dnd.Races{Races: races[:]}
+
+	output, err := xml.MarshalIndent(v, " ", "  ")
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+	}
+
+	os.Stdout.Write(output)
+}
