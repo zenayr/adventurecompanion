@@ -4,34 +4,61 @@ import (
 	//"fmt"
 	//"os"
 	//"path/filepath"
+	//"fmt"
+	//"log"
+
+	"errors"
 	"fmt"
 	"log"
 
+	internal "github.com/zenayr/adventurecompanion/internal"
 	dnd "github.com/zenayr/adventurecompanion/internal/struct"
 	parser "github.com/zenayr/adventurecompanion/internal/util"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+
+	//"fyne.io/fyne/v2/canvas"
+	//"fyne.io/fyne/v2/driver/desktop"
+	//"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 )
 
 func main() {
-	// ex, err := os.Executable()
-	// if err != nil {
-	// 	panic(err)
-	// }
 
-	// exePath := filepath.Dir(ex)
-	// os.Mkdir(exePath+"/"+"xml", 0644)
-	// fmt.Println("Directory xml created in " + exePath)
+	races := parser.Parse()
 
-	// races := parser.Parse()
+	internal.PrintRaces(races)
 
-	// for i := 0; i < len(races.Races); i++ {
-	// 	fmt.Println(races.Races[i].Name)
-	// 	fmt.Println(races.Races[i].Size)
-	// 	fmt.Println(races.Races[i].Speed)
-	// 	fmt.Println(races.Races[i].Ability)
-	// 	fmt.Println(races.Races[i].Proficiency)
-	// 	fmt.Println(races.Races[i].SpellAbility)
-	// 	fmt.Println("")
-	// }
+	if len(races.Races) <= 0 {
+		log.Fatal("Error: No Races")
+
+	}
+
+	a := app.New()
+	w := a.NewWindow("Adventure Companion")
+
+	content, err := makeAccordion(races)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//l1 := widget.NewLabel("Hello World!")
+	//l2 := widget.NewLabel("Hello Again!")
+	//content := container.New(layout.NewGridLayout(1), l1, l2)
+
+	if content != nil {
+		w.SetContent(content)
+	}
+	w.Resize(fyne.NewSize(640, 460))
+	w.ShowAndRun()
+
+}
+
+func inputRaces() {
+
 	r := dnd.Race{}
 
 	fmt.Print("Name: ")
@@ -77,4 +104,34 @@ func main() {
 	fmt.Println()
 
 	parser.MakeXml(r)
+
+}
+
+func makeAccordion(races dnd.Races) (fyne.CanvasObject, error) {
+	if len(races.Races) <= 0 {
+		return nil, errors.New(("Error: No Races"))
+	}
+	ac := widget.NewAccordion()
+
+	for i := 0; i < len(races.Races); i++ {
+		size := widget.NewLabel(races.Races[i].Size)
+		speed := widget.NewLabel(races.Races[i].Speed)
+		ability := widget.NewLabel(races.Races[i].Ability)
+		procifiency := widget.NewLabel(races.Races[i].Proficiency)
+		spellAbility := widget.NewLabel(races.Races[i].SpellAbility)
+
+		detail := container.New(layout.NewGridLayout(5), size, speed, ability, procifiency, spellAbility)
+
+		newItem := widget.NewAccordionItem(races.Races[i].Name,
+			detail,
+		)
+		ac.Append(newItem)
+
+	}
+
+	if len(ac.Items) <= 0 {
+		return nil, errors.New(("Error: No Items"))
+	}
+	return ac, nil
+
 }

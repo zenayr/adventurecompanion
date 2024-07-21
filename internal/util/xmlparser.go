@@ -4,15 +4,16 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	dnd "github.com/zenayr/adventurecompanion/internal/struct"
 )
 
 func Parse() dnd.Races {
-	xmlFile, err := os.Open("../../xml/races-phb.xml")
+	xmlFile, err := os.Open("../xml/races-phb.xml")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 	defer xmlFile.Close()
@@ -26,7 +27,6 @@ func Parse() dnd.Races {
 }
 
 func MakeXml(r dnd.Race) {
-	//r := &dnd.Race{Name: "test", Size: "10", Speed: "10", Ability: " ", Proficiency: " ", SpellAbility: " "}
 	var races [1]dnd.Race
 	races[0] = r
 
