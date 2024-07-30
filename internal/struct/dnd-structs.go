@@ -1,9 +1,9 @@
-package dnd
+package dndstructs
 
 import "encoding/xml"
 
 type Races struct {
-	XMLName xml.Name `xml:"races"`
+	XMLName xml.Name `xml:"compendium"`
 	Races   []Race   `xml:"race"`
 }
 
