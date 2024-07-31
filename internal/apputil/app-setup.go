@@ -2,6 +2,7 @@ package apputil
 
 import (
 	"errors"
+	"fmt"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -88,4 +89,58 @@ func MakeRaceCard(race dndstructs.Race) fyne.CanvasObject {
 	raceCard.Image = canvas.NewImageFromResource(data.FyneLogo)
 
 	return raceCard
+}
+
+func MakeRaceFormTab(_ fyne.Window) fyne.CanvasObject {
+	nameEntry := widget.NewEntry()
+	nameEntry.SetPlaceHolder("Dragonborn")
+	abilityScoreEntry := widget.NewEntry()
+	ageEntry := widget.NewMultiLineEntry()
+	speedEntry := widget.NewEntry()
+
+	sizeSelect := widget.NewSelectEntry([]string{
+		"Tiny",
+		"Small",
+		"Medium",
+		"Large",
+		"Huge",
+		"Gargantuan",
+	})
+
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Name", Widget: nameEntry, HintText: "Name of the race"},
+			{Text: "Ability Score", Widget: abilityScoreEntry, HintText: "Ability score increases"},
+			{Text: "Age", Widget: ageEntry, HintText: "How the race ages"},
+			{Text: "Size", Widget: sizeSelect, HintText: "Size of the race"},
+			{Text: "Speed", Widget: speedEntry, HintText: "Speed of the race"},
+		},
+		OnCancel: func() {
+			fmt.Println("Cancelled")
+		},
+		OnSubmit: func() {
+			fmt.Println("Form submitted")
+		},
+	}
+	return form
+}
+
+func MakeTraitFormTab(_ fyne.Window) fyne.CanvasObject {
+	nameEntry := widget.NewEntry()
+	nameEntry.SetPlaceHolder("Dark Vision")
+	descriptionEntry := widget.NewMultiLineEntry()
+
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Name", Widget: nameEntry, HintText: "Trait name"},
+			{Text: "Description", Widget: descriptionEntry, HintText: "Trait description"},
+		},
+		OnCancel: func() {
+			fmt.Println("Cancelled")
+		},
+		OnSubmit: func() {
+			fmt.Println("Form submitted")
+		},
+	}
+	return form
 }

@@ -6,7 +6,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-
+	"fyne.io/fyne/v2/container"
 	"github.com/zenayr/adventurecompanion/internal/apputil"
 	xmlparser "github.com/zenayr/adventurecompanion/internal/util"
 )
@@ -26,7 +26,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Adventure Companion")
 
-	content, err := apputil.MakeRacesList(races)
+	raceListTab, err := apputil.MakeRacesList(races)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -35,9 +35,18 @@ func main() {
 	// 	fmt.Println(err)
 	// }
 
-	if content != nil {
-		w.SetContent(content)
-	}
+	raceFormTab := apputil.MakeRaceFormTab(w)
+
+	traitFormTab := apputil.MakeTraitFormTab(w)
+
+	tabs := container.NewAppTabs(
+		container.NewTabItem("Races", raceListTab),
+		container.NewTabItem("Trait Form", traitFormTab),
+		container.NewTabItem("Race Form", raceFormTab),
+	)
+
+	w.SetContent(tabs)
+
 	w.Resize(fyne.NewSize(640, 460))
 	w.ShowAndRun()
 
