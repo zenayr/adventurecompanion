@@ -45,10 +45,10 @@ func MakeRacesList(races dndstructs.Races) (fyne.CanvasObject, error) {
 		return nil, errors.New(("error: no races"))
 	}
 
-	icon := widget.NewIcon(nil)
-	label := widget.NewLabel("Select An Item From The List")
-	card := widget.NewCard("", "", nil)
-	hbox := container.NewHBox(card)
+	//icon := widget.NewIcon(nil)
+	//label := widget.NewLabel("Select An Item From The List")
+	raceCard := widget.NewCard("", "", widget.NewLabel("Select An Item From The List"))
+	hbox := container.NewHBox(raceCard)
 
 	list := widget.NewList(
 		func() int {
@@ -63,14 +63,11 @@ func MakeRacesList(races dndstructs.Races) (fyne.CanvasObject, error) {
 	)
 
 	list.OnSelected = func(id widget.ListItemID) {
-		label.SetText(races.Races[id].Name)
-		icon.SetResource(theme.DocumentIcon())
-		MakeRaceCard(races.Races[id])
+		raceCard.SetContent(MakeRaceCard(races.Races[id]))
 	}
+
 	list.OnUnselected = func(id widget.ListItemID) {
-		label.SetText("Select An Item From The List")
-		icon.SetResource(nil)
-		card = widget.NewCard("", "", nil)
+		raceCard.SetContent(widget.NewLabel("Select An Item From The List"))
 	}
 	list.Select(125)
 	list.SetItemHeight(5, 50)
@@ -79,9 +76,16 @@ func MakeRacesList(races dndstructs.Races) (fyne.CanvasObject, error) {
 	return container.NewHSplit(list, container.NewCenter(hbox)), nil
 }
 
-func MakeRaceCard(race dndstructs.Race) fyne.Widget {
-	card := widget.NewCard(race.Name, "Race", nil)
-	card.Image = canvas.NewImageFromResource(data.FyneLogo)
+func MakeRaceCard(race dndstructs.Race) fyne.CanvasObject {
+	size := widget.NewLabel("Size: " + race.Size)
+	speed := widget.NewLabel("Speed: " + race.Speed)
+	ability := widget.NewLabel("Ability: " + race.Ability)
+	proficiency := widget.NewLabel("Proficiency: " + race.Proficiency)
+	spellAbility := widget.NewLabel("SpellAbility: " + race.SpellAbility)
 
-	return card
+	content := container.NewGridWithRows(5, size, speed, ability, proficiency, spellAbility)
+	raceCard := widget.NewCard(race.Name, "", content)
+	raceCard.Image = canvas.NewImageFromResource(data.FyneLogo)
+
+	return raceCard
 }
